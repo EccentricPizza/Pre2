@@ -100,4 +100,97 @@ function addItem(name, price, option = "") {
 
     localStorage.setItem("basket", JSON.stringify(basket));
     updateBasketDisplay();
+function updateBasketDisplay() {
+    const list = document.getElementById("basketList");
+    const total = document.getElementById("totalPrice");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+    let sum = 0;
+
+    basket.forEach((item, index) => {
+        let li = document.createElement("li");
+        li.textContent = `${item.name} — £${item.price.toFixed(2)} x `;
+
+        // Quantity input
+        let qtyInput = document.createElement("input");
+        qtyInput.type = "number";
+        qtyInput.min = 1;
+        qtyInput.value = item.quantity;
+        qtyInput.style.width = "50px";
+        qtyInput.onchange = function() {
+            item.quantity = parseInt(qtyInput.value);
+            localStorage.setItem("basket", JSON.stringify(basket));
+            updateBasketDisplay();
+        };
+
+        // Remove button
+        let removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.style.marginLeft = "10px";
+        removeBtn.onclick = function() {
+            basket.splice(index, 1);
+            localStorage.setItem("basket", JSON.stringify(basket));
+            updateBasketDisplay();
+        };
+
+        li.appendChild(qtyInput);
+        li.appendChild(removeBtn);
+        list.appendChild(li);
+
+        sum += item.price * item.quantity;
+    });
+
+    total.textContent = "Total: £" + sum.toFixed(2);
+if (summaryList) {
+    let basket = JSON.parse(localStorage.getItem("basket") || "[]");
+
+    function renderSummary() {
+        summaryList.innerHTML = "";
+        let total = 0;
+
+        if (basket.length === 0) {
+            summaryList.innerHTML = "<li>Your basket is empty!</li>";
+            summaryTotal.textContent = "Total: £0.00";
+            return;
+        }
+
+        basket.forEach((item, index) => {
+            let li = document.createElement("li");
+            li.textContent = `${item.name} — £${item.price.toFixed(2)} x `;
+
+            // Quantity input
+            let qtyInput = document.createElement("input");
+            qtyInput.type = "number";
+            qtyInput.min = 1;
+            qtyInput.value = item.quantity;
+            qtyInput.style.width = "50px";
+            qtyInput.onchange = function() {
+                item.quantity = parseInt(qtyInput.value);
+                localStorage.setItem("basket", JSON.stringify(basket));
+                renderSummary();
+            };
+
+            // Remove button
+            let removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.style.marginLeft = "10px";
+            removeBtn.onclick = function() {
+                basket.splice(index, 1);
+                localStorage.setItem("basket", JSON.stringify(basket));
+                renderSummary();
+            };
+
+            li.appendChild(qtyInput);
+            li.appendChild(removeBtn);
+            summaryList.appendChild(li);
+
+            total += item.price * item.quantity;
+        });
+
+        summaryTotal.textContent = "Total: £" + total.toFixed(2);
+    }
+
+    renderSummary();
 }
