@@ -1,7 +1,7 @@
-// Save location and go to menu
+// --- LOCATION PAGE ---
 function selectLocation(loc) {
     localStorage.setItem("location", loc);
-    window.location = "menu.html";
+    window.location.href = "menu.html";
 }
 
 // Display location on menu page
@@ -10,96 +10,35 @@ if (locTitle) {
     locTitle.textContent = "Location: " + localStorage.getItem("location");
 }
 
-// Options handlers
+// --- MENU OPTIONS ---
 function getMargOptions() {
     return document.getElementById("margNoBasil").checked ? " (No basil)" : "";
 }
 
 function getPepOptions() {
-    if (document.getElementById("pepHotHoney").checked)
-        return " (Hot Honey +£1)";
-    return "";
+    return document.getElementById("pepHotHoney").checked ? " (Hot Honey +£1)" : "";
 }
 
-// Basket
+// --- BASKET ---
 let basket = JSON.parse(localStorage.getItem("basket") || "[]");
 
+// Add item with options and quantity
 function addItem(name, price, option = "") {
     if (option.includes("Hot Honey")) price += 1;
 
-    basket.push({ name: name + option, price });
-    localStorage.setItem("basket", JSON.stringify(basket));
-
-    updateBasketDisplay();
-}
-
-function updateBasketDisplay() {
-    const list = document.getElementById("basketList");
-    const total = document.getElementById("totalPrice");
-
-    if (!list) return;
-
-    list.innerHTML = "";
-    let sum = 0;
-
-    basket.forEach(item => {
-        let li = document.createElement("li");
-        li.textContent = `${item.name} — £${item.price.toFixed(2)}`;
-        list.appendChild(li);
-        sum += item.price;
-    });
-
-    total.textContent = "Total: £" + sum.toFixed(2);
-}
-
-updateBasketDisplay();
-
-// Go to checkout
-function goToCheckout() {
-    window.location = "checkout.html";
-}
-
-// Checkout Page
-const summaryList = document.getElementById("summaryList");
-const summaryTotal = document.getElementById("summaryTotal");
-
-if (summaryList) {
-    let total = 0;
-    basket.forEach(item => {
-        let li = document.createElement("li");
-        li.textContent = `${item.name} — £${item.price.toFixed(2)}`;
-        summaryList.appendChild(li);
-        total += item.price;
-    });
-    summaryTotal.textContent = "Total: £" + total.toFixed(2);
-}
-
-// Generate time slots
-const timeSlot = document.getElementById("timeSlot");
-if (timeSlot) {
-    for (let t = 16 * 60 + 10; t <= 20 * 60 + 50; t += 10) {
-        let hour = Math.floor(t / 60);
-        let min = t % 60;
-        let label = `${hour}:${min.toString().padStart(2, "0")}`;
-
-        let opt = document.createElement("option");
-        opt.value = label;
-        opt.textContent = label;
-        timeSlot.appendChild(opt);
-    }
-function addItem(name, price, option = "") {
-    if (option.includes("Hot Honey")) price += 1;
-
-    // Check if item already exists
+    // Check if same item + option exists
     let existing = basket.find(item => item.name === name + option);
     if (existing) {
-        existing.quantity += 1; // increment quantity
+        existing.quantity += 1;
     } else {
         basket.push({ name: name + option, price, quantity: 1 });
     }
 
     localStorage.setItem("basket", JSON.stringify(basket));
     updateBasketDisplay();
+}
+
+// Update basket display (menu page)
 function updateBasketDisplay() {
     const list = document.getElementById("basketList");
     const total = document.getElementById("totalPrice");
@@ -118,7 +57,6 @@ function updateBasketDisplay() {
         qtyInput.type = "number";
         qtyInput.min = 1;
         qtyInput.value = item.quantity;
-        qtyInput.style.width = "50px";
         qtyInput.onchange = function() {
             item.quantity = parseInt(qtyInput.value);
             localStorage.setItem("basket", JSON.stringify(basket));
@@ -128,7 +66,6 @@ function updateBasketDisplay() {
         // Remove button
         let removeBtn = document.createElement("button");
         removeBtn.textContent = "Remove";
-        removeBtn.style.marginLeft = "10px";
         removeBtn.onclick = function() {
             basket.splice(index, 1);
             localStorage.setItem("basket", JSON.stringify(basket));
@@ -143,9 +80,23 @@ function updateBasketDisplay() {
     });
 
     total.textContent = "Total: £" + sum.toFixed(2);
-if (summaryList) {
-    let basket = JSON.parse(localStorage.getItem("basket") || "[]");
+}
 
+// Go to checkout page
+function goToCheckout() {
+    window.location.href = "checkout.html";
+}
+
+updateBasketDisplay();
+
+// --- CHECKOUT PAGE ---
+const summaryList = document.getElementById("summaryList");
+const summaryTotal = document.getElementById("summaryTotal");
+
+if (summaryList) {
+    basket = JSON.parse(localStorage.getItem("basket") || "[]");
+
+    // Render basket summary
     function renderSummary() {
         summaryList.innerHTML = "";
         let total = 0;
@@ -160,22 +111,18 @@ if (summaryList) {
             let li = document.createElement("li");
             li.textContent = `${item.name} — £${item.price.toFixed(2)} x `;
 
-            // Quantity input
             let qtyInput = document.createElement("input");
             qtyInput.type = "number";
             qtyInput.min = 1;
             qtyInput.value = item.quantity;
-            qtyInput.style.width = "50px";
             qtyInput.onchange = function() {
                 item.quantity = parseInt(qtyInput.value);
                 localStorage.setItem("basket", JSON.stringify(basket));
                 renderSummary();
             };
 
-            // Remove button
             let removeBtn = document.createElement("button");
             removeBtn.textContent = "Remove";
-            removeBtn.style.marginLeft = "10px";
             removeBtn.onclick = function() {
                 basket.splice(index, 1);
                 localStorage.setItem("basket", JSON.stringify(basket));
@@ -193,4 +140,40 @@ if (summaryList) {
     }
 
     renderSummary();
+
+    // Populate time slots
+    const timeSlot = document.getElementById("timeSlot");
+    for (let t = 16 * 60 + 10; t <= 20 * 60 + 50; t += 10) {
+        let hour = Math.floor(t / 60);
+        let min = t % 60;
+        let label = `${hour}:${min.toString().padStart(2, "0")}`;
+
+        let opt = document.createElement("option");
+        opt.value = label;
+        opt.textContent = label;
+        timeSlot.appendChild(opt);
+    }
+
+    // Handle order submission
+    document.getElementById("orderForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("custName").value;
+        const phone = document.getElementById("custPhone").value;
+        const date = document.getElementById("pickupDate").value;
+        const time = document.getElementById("timeSlot").value;
+
+        if (!name || !phone || !date || !time) {
+            alert("Please fill out all fields.");
+            return;
+        }
+
+        alert(`Thank you ${name}! Your order has been placed.\nPickup: ${date} at ${time}\nTotal: £${basket.reduce((a,b)=>a+b.price*b.quantity,0).toFixed(2)}`);
+
+        // Clear basket
+        localStorage.removeItem("basket");
+
+        // Redirect to location page
+        window.location.href = "index.html";
+    });
 }
