@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1 id="locationTitle"></h1>
+
+<h2>Pizzas</h2>
+<div class="menu-section">
+
+    <div class="item">
+        <p>Margarita — £9</p>
+        <label><input type="checkbox" id="margNoBasil"> Without basil</label>
+        <button onclick="addItem('Margarita', 9, getMargOptions())">Add</button>
+    </div>
+
+    <div class="item">
+        <p>Pepperoni — £10</p>
+        <label><input type="checkbox" id="pepHotHoney"> Add Hot Honey + £1</label>
+        <button onclick="addItem('Pepperoni', 10, getPepOptions())">Add</button>
+    </div>
+
+    <div class="item">
+        <p>Hawaiian — £10.5</p>
+        <button onclick="addItem('Hawaiian', 10.5)">Add</button>
+    </div>
+
+    <div class="item">
+        <p>Sweet Chick — £10.5</p>
+        <button onclick="addItem('Sweet Chick', 10.5)">Add</button>
+    </div>
+</div>
+
+<h2>Sides</h2>
+<div class="menu-section">
+    <div class="item"><p>Garlic Bread — £8</p><button onclick="addItem('Garlic Bread', 8)">Add</button></div>
+    <div class="item"><p>Arancini — £6</p><button onclick="addItem('Arancini', 6)">Add</button></div>
+    <div class="item"><p>Pasta Frita — £6.5</p><button onclick="addItem('Pasta Frita', 6.5)">Add</button></div>
+</div>
+
+<h2>Dips</h2>
+<div class="menu-section">
+    <div class="item"><p>Hot-Honey — £2.5</p><button onclick="addItem('Hot-Honey Dip', 2.5)">Add</button></div>
+    <div class="item"><p>Garlic Aioli — £2</p><button onclick="addItem('Garlic Aioli', 2)">Add</button></div>
+    <div class="item"><p>Buffalo — £2.5</p><button onclick="addItem('Buffalo', 2.5)">Add</button></div>
+    <div class="item"><p>BBQ — £2</p><button onclick="addItem('BBQ', 2)">Add</button></div>
+</div>
+
+<!-- Basket -->
+<div id="basket">
+    <h2>Your Basket</h2>
+    <ul id="basketList"></ul>
+    <p id="totalPrice">Total: £0.00</p>
+    <button onclick="goToCheckout()" class="checkout-btn">Checkout</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
