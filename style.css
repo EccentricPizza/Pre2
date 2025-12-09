@@ -40,4 +40,11 @@ button {
 
 .checkout-btn {
     background: green;
+#basketList input,
+#summaryList input {
+    margin-left: 5px;
+    padding: 2px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
 }
