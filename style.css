@@ -40,6 +40,21 @@ button {
 
 .checkout-btn {
     background: green;
+}
+
+/* Remove buttons */
+#basketList button,
+#summaryList button {
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Quantity inputs */
 #basketList input,
 #summaryList input {
     margin-left: 5px;
