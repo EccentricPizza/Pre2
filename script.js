@@ -87,4 +87,17 @@ if (timeSlot) {
         opt.textContent = label;
         timeSlot.appendChild(opt);
     }
+function addItem(name, price, option = "") {
+    if (option.includes("Hot Honey")) price += 1;
+
+    // Check if item already exists
+    let existing = basket.find(item => item.name === name + option);
+    if (existing) {
+        existing.quantity += 1; // increment quantity
+    } else {
+        basket.push({ name: name + option, price, quantity: 1 });
+    }
+
+    localStorage.setItem("basket", JSON.stringify(basket));
+    updateBasketDisplay();
 }
